@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Matrix</title>
+</head>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<body>
+<button onclick="multiply1()">Multiply 1</button>
+<button onclick="multiply2()">Multiply 2</button>
+<label>Threads:
+<input type="text" id="threadsSize"/>
+</label>
+<label>Size:
+    <input type="text" id="size"/>
+</label>
+<br/>
+<label id="time1">Time 1:</label>
+<br/>
+<label id="time2">Time 2:</label>
+</body>
+<script>
+    function multiply1() {
+        let size = document.getElementById('size').value;
+        let threadSize = document.getElementById('threadsSize').value;
+
+        let matrixA = new Array(size);
+        let matrixB = new Array(size);
+
+        for (let i = 0; i < size; i++) {
+            matrixA[i] = new Array(size);
+            matrixB[i] = new Array(size);
+            for (let l = 0; l < size; l++) {
+                matrixA[i][l] = Math.trunc(Math.random() * 10);
+                matrixB[i][l] = Math.trunc(Math.random() * 10);
+            }
+        }
+
+        let data = {
+            matrixA: matrixA,
+            matrixB: matrixB,
+            threadsSize: threadSize
+        };
+
+        let start = new Date();
+
+        $.ajax({
+            url: '/multiply1',
+            type: 'POST',
+            dataType : "json",
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(data),
+            success: data => {
+                let end = new Date();
+                document.getElementById("time1").innerText = "Time 1: " + (end.getTime() - start.getTime());
+            },
+            error: er => {
+                let end = new Date();
+                document.getElementById("time1").innerText = "Time 1: " + (end.getTime() - start.getTime());
+            }
+        });
+    }
+
+    function multiply2() {
+        let size = document.getElementById('size').value;
+        let threadSize = document.getElementById('threadsSize').value;
+
+        let data = {
+            matrixSize: size,
+            threadsSize: threadSize
+        };
+
+        let start = new Date();
+
+        $.ajax({
+            url: '/multiply2',
+            type: 'POST',
+            dataType : "json",
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(data),
+            success: data => {
+                let end = new Date();
+                document.getElementById("time2").innerText = "Time 2: " + (end.getTime() - start.getTime());
+            },
+            error: er => {
+                let end = new Date();
+                document.getElementById("time2").innerText = "Time 2: " + (end.getTime() - start.getTime());
+            }
+        });
+    }
+</script>
+</html>
